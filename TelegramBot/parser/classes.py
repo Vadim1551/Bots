@@ -6,46 +6,58 @@ class Game:
         self.__start_items = []
         self.__items = []
 
-    def get_win(self):
+    @property
+    def win(self):
         return self.__win
 
-    def set_win(self, text):
+    @win.setter
+    def win(self, text):
         self.__win = text
 
-    def get_player_name(self):
+    @property
+    def player_name(self):
         return self.__player_name
 
-    def set_player_name(self, text):
+    @player_name.setter
+    def player_name(self, text):
         self.__player_name = text
 
-    def get_mmr(self):
+    @property
+    def mmr(self):
         return self.__mmr
 
-    def set_mmr(self, text):
+    @mmr.setter
+    def mmr(self, text):
         self.__mmr = text
 
-    def get_start_items(self):
+    @property
+    def start_items(self):
         return self.__start_items
 
-    def set_start_items(self, text):
+    @start_items.setter
+    def start_items(self, text):
         self.__start_items = text
 
-    def get_items(self):
+    @property
+    def items(self):
         return self.__items
 
-    def set_items(self, text):
+    @items.setter
+    def items(self, text):
         self.__items = text
 
 
 class Person:
     def __init__(self):
-        self.__heroName = ''
+        self.__hero_name = ''
 
-    def get_name(self):
-        return self.__heroName
+    @property
+    def hero_name(self):
+        return self.__hero_name
 
-    def set_name(self, name):
-        self.__heroName = name
+    @hero_name.setter
+    def hero_name(self, name):
+        self.__hero_name = name
 
 
 class Hero:
@@ -54,52 +66,66 @@ class Hero:
         self.__win_rate = ''
         self.__matches = ''
 
-    def get_hero_name(self):
+    @property
+    def hero_name(self):
         return self.__hero_name
 
-    def set_hero_name(self, name):
+    @hero_name.setter
+    def hero_name(self, name):
         self.__hero_name = name
 
-    def get_win_rate(self):
+    @property
+    def win_rate(self):
         return self.__win_rate
 
-    def set_win_rate(self, name):
+    @win_rate.setter
+    def win_rate(self, name):
         self.__win_rate = name
 
-    def get_matches(self):
+    @property
+    def matches(self):
         return self.__matches
 
-    def set_matches(self, name):
+    @matches.setter
+    def matches(self, name):
         self.__matches = name
 
 
 class Item:
     def __init__(self):
-        self.__item_Name = ''
-        self.__item_Win = ''
-        self.__item_Count = '1x'
-        self.__item_Time = ''
+        self.__item_name = ''
+        self.__item_win = ''
+        self.__item_count = '1x'
+        self.__item_time = ''
 
-    def get_item_Name(self):
-        return self.__item_Name
+    @property
+    def item_name(self):
+        return self.__item_name
 
-    def set_item_Name(self, name):
-        self.__item_Name = name
+    @item_name.setter
+    def item_name(self, name):
+        self.__item_name = name
 
-    def get_item_Win(self):
-        return self.__item_Win
+    @property
+    def item_win(self):
+        return self.__item_win
 
-    def set_item_Win(self, name):
-        self.__item_Win = name
+    @item_win.setter
+    def item_win(self, name):
+        self.__item_win = name
 
-    def get_item_Count(self):
-        return self.__item_Count
+    @property
+    def item_count(self):
+        return self.__item_count
 
-    def set_item_Count(self, name):
-        self.__item_Count = name
+    @item_count.setter
+    def item_count(self, name):
+        self.__item_count = name
 
-    def get_item_Time(self):
-        return self.__item_Time
+    @property
+    def item_time(self):
+        return self.__item_time
 
-    def set_item_Time(self, name):
-        self.__item_Time = name
+    @item_time.setter
+    def item_time(self, name):
+        self.__item_time = name

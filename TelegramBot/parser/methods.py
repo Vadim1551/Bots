@@ -63,7 +63,7 @@ class Methods:
         soup = BeautifulSoup(src, "lxml")
         return soup
 
-    def get_list_heros(self, table_num):  # Получение списка героев с их показателями
+    def list_heros(self, table_num):  # Получение списка героев с их показателями
         soup = get_soup("buff")
         list_section = soup.find(class_="col-8").find_all("section")
         list_heroes = list_section[table_num].find_all("tr")
@@ -76,11 +76,11 @@ class Methods:
                 if len(items.text) != 0:
                     x += 1
                     if x == 1:
-                        hero.set_hero_name(items.text)
+                        hero.hero_name = items.text
                     if x == 3:
-                        hero.set_win_rate(items.text)
+                        hero.win_rate = items.text
                     if x == 4:
-                        hero.set_matches(items.text)
+                        hero.matches = items.text
             list_objects.append(hero)
         return list_objects
 
@@ -89,13 +89,13 @@ class Methods:
         name = name.replace('_', ' ')
         name = name[:1].upper() + name[1:]
         thing = Item()
-        thing.set_item_Name(name)
+        thing.item_name(name)
         if skip == 2 or skip == 3:
             win = list_win[i].get_text().strip()
-            thing.set_item_Win(win)
+            thing.item_win(win)
         return thing
 
-    def get_list_items(self, count):  # Получаем список предметов из нужной таблицы
+    def list_items(self, count):  # Получаем список предметов из нужной таблицы
         soup = get_soup("pro")
         list_item_tables = soup.find("div", class_="content-box-body").find_all("div", class_="inner-box")
         list_item = []
@@ -117,7 +117,7 @@ class Methods:
                             thing = set_item_name_and_win(item_name, skip, list_win, i)
                             count = list_items[i].find('div', class_="item-charges")
                             if count is not None:
-                                thing.set_item_Count(count.text.strip())
+                                thing.item_count = count.text.strip()
                             list_item.append(thing)
                         except IndexError:
                             pass
@@ -135,7 +135,7 @@ class Methods:
                     return list_item
             skip += 1
 
-    def get_win_rate(self):
+    def win_rate(self):
         soup = get_soup("pro")
         list_data = []
         list_win_and_matches = soup.find("div", class_="hero-header-stats-detailed").find_all('span')
@@ -145,7 +145,7 @@ class Methods:
         list_data.append(w)
         return list_data
 
-    def get_last_games(self, count_games):  # Получаем список последних игр про-игроков на этом герое
+    def last_games(self, count_games):  # Получаем список последних игр про-игроков на этом герое
         soup = get_soup("pro")
         list_last_games = []
         list_games = soup.find('table', class_='alx_table sort-fd').find('tbody').find_all('tr')
@@ -168,13 +168,13 @@ class Methods:
                 set_game_end_items(list_item_build, game)
 
                 win = ''.join(item.td['class'])
-                game.set_win(win)
+                game.win = win
 
                 player_name = item.find("div", class_='pros-stats').find('a').text
-                game.set_player_name(player_name)
+                game.player_name = player_name
 
                 mmr = item.find('td', class_='td-mmr').text
-                game.set_mmr(mmr)
+                game.mmr = mmr
 
                 list_last_games.append(game)
             count += 1
@@ -186,38 +186,38 @@ def set_item_name_and_win(item_name, skip, list_win, i):  # Получение �
     name = name.replace('_', ' ')
     name = name[:1].upper() + name[1:]
     thing = Item()
-    thing.set_item_Name(name)
+    thing.item_name = name
     if skip == 2 or skip == 3:
         win = list_win[i].get_text().strip()
-        thing.set_item_Win(win)
+        thing.item_win = win
     return thing
 
 
 def set_game_end_items(list_item_build, game):
     list_middle = []
     for items2 in list_item_build:  # Все купленные предметы к концу игры
-        pr = Item()
-        pr.set_item_Name(items2.get("title"))
-        pr.set_item_Time(items2.get_text().strip())
-        list_middle.append(pr)
-    game.set_items(list_middle)
+        thing = Item()
+        thing.item_name = items2.get("title")
+        thing.item_time = items2.get_text().strip()
+        list_middle.append(thing)
+    game.items = list_middle
 
 
 def set_game_start_items(list_start_items, game):
     list_start = []
     for items in list_start_items:  # Начальные предметы
-        pr = Item()
+        thing = Item()
         name = ''.join(
             ''.join(items.get('style').split('.jpg')[:-1]).split("background-image:url('/static/items_jpg_res/"))
         name = name[:1].upper() + name[1:]
-        pr.set_item_Name(name.replace('_', ' '))
+        thing.item_name = name.replace('_', ' ')
         counts = items.get_text().strip()
         if counts == '' or counts == '1':
-            pr.set_item_Count(1)
+            thing.item_count = 1
         else:
-            pr.set_item_Count(counts)
-        list_start.append(pr)
-    game.set_start_items(list_start)
+            thing.item_count = counts
+        list_start.append(thing)
+    game.start_items = list_start
 
 
 def get_soup(site_name):

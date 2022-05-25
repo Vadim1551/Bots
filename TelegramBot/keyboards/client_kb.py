@@ -3,7 +3,8 @@ from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
 
 class Keyboards:
 
-    def get_menu_num(self):
+    @property
+    def menu_num(self):
         markup = ReplyKeyboardMarkup(resize_keyboard=True)
         btn1 = KeyboardButton('1')
         btn2 = KeyboardButton('2')
@@ -14,7 +15,8 @@ class Keyboards:
         markup.add(btn1, btn2, btn3, btn4, btn5, btn6)
         return markup
 
-    def get_start_menu(self):
+    @property
+    def start_menu(self):
         markup = ReplyKeyboardMarkup(resize_keyboard=True)
         btn1 = KeyboardButton('🏹 Предметы')
         btn2 = KeyboardButton('😊 Кого контрит')
@@ -24,7 +26,8 @@ class Keyboards:
         markup.add(btn1, btn2, btn3, btn4, btn5)
         return markup
 
-    def get_menu_items(self):
+    @property
+    def menu_items(self):
         markup = ReplyKeyboardMarkup(resize_keyboard=True)
         btn1 = KeyboardButton('🛒 Предметы для покупки')
         btn2 = KeyboardButton('🏁 Стартовый закуп')
