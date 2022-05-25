@@ -13,6 +13,14 @@ class Methods:
         "User-Agent": f"{UA.random}"
     }
 
+    POSITION = {
+        '🗡️ Carry' : 2,
+        '🏹 Mid lane' : 3,
+        '🛡️ Off lane' : 4,
+        '🤝 Soft support (Pos 4)' : 5,
+        '🆘 Hard support (Pos 5)' : 6
+    }
+
     def hero_check(self, text):  # Проверка на существование имени героя
         list_names = open('list_hero_names.txt', encoding='utf-8')
         count = 0
@@ -29,12 +37,15 @@ class Methods:
     def create_files(self, name_hero):
         t1 = threading.Thread(target=self.get_html(name_hero, 1))
         t2 = threading.Thread(target=self.get_html(name_hero, 2))
+        t3 = threading.Thread(target=self.get_html(name_hero, 3))
 
         t1.start()
         t2.start()
+        t3.start()
 
         t1.join()
         t2.join()
+        t3.join()
 
     def get_html(self, name_hero, num_site):  # Получение html кода страницы с одного из двух сайтов
         if num_site == 1:
@@ -43,6 +54,7 @@ class Methods:
             src = req.text
             with open("dotapro.html", "w", encoding='utf-8') as file:
                 file.write(src)
+
         elif num_site == 2:
             URL = 'https://ru.dotabuff.com/heroes/'
             req = requests.get(URL + name_hero.lower().replace(' ', '-'), headers=self.HEADERS)
@@ -50,18 +62,27 @@ class Methods:
             with open("dotabuff.html", "w", encoding='utf-8') as file:
                 file.write(src)
 
-    def get_soup(self, site_name):
+        elif num_site == 3:
+            URL = 'https://www.dota2protracker.com/meta'
+            req = requests.get(URL, headers=self.HEADERS)
+            src = req.text
+            with open("dotameta.html", "w", encoding='utf-8') as file:
+                file.write(src)
 
-        if site_name == "pro":
-            with open("dotapro.html", encoding='utf-8') as file:
-                src = file.read()
 
-        if site_name == "buff":
-            with open("dotabuff.html", encoding='utf-8') as file:
-                src = file.read()
+    def meta_heroes(self, position):
+        list_heroes = []
+        pos = self.POSITION[f'{position}']
+        soup = get_soup("meta")
+        list_meta_heroes = soup.find('div', class_=f'content-box tabs-{pos} inactive').find_all('div', class_='top-hero')
+        for item in list_meta_heroes:
+            hero = Hero()
+            hero.hero_name = item.find('a').get('title')
+            hero.matches = item.find('div', class_='perc-wr').get_text()
+            hero.win_rate = item.find('span').get_text()
+            list_heroes.append(hero)
+        return list_heroes
 
-        soup = BeautifulSoup(src, "lxml")
-        return soup
 
     def list_heros(self, table_num):  # Получение списка героев с их показателями
         soup = get_soup("buff")
@@ -225,8 +246,12 @@ def get_soup(site_name):
         with open("dotapro.html", encoding='utf-8') as file:
             src = file.read()
 
-    if site_name == "buff":
+    elif site_name == "buff":
         with open("dotabuff.html", encoding='utf-8') as file:
+            src = file.read()
+
+    elif site_name == 'meta':
+        with open("dotameta.html", encoding='utf-8') as file:
             src = file.read()
 
     soup = BeautifulSoup(src, "lxml")

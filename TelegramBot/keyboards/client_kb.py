@@ -18,12 +18,33 @@ class Keyboards:
     @property
     def start_menu(self):
         markup = ReplyKeyboardMarkup(resize_keyboard=True)
+        btn1 = KeyboardButton('👱🏽 Выбрать героя')
+        btn2 = KeyboardButton('💪 Метовые герои')
+        markup.add(btn1, btn2)
+        return markup
+
+    @property
+    def hero_menu(self):
+        markup = ReplyKeyboardMarkup(resize_keyboard=True)
         btn1 = KeyboardButton('🏹 Предметы')
         btn2 = KeyboardButton('😊 Кого контрит')
         btn3 = KeyboardButton('😰 Контрпики')
         btn4 = KeyboardButton('🏟 Последние игры')
-        btn5 = KeyboardButton('🔙 Выбрать другого героя')
-        markup.add(btn1, btn2, btn3, btn4, btn5)
+        btn5 = KeyboardButton('🔄 Выбрать другого героя')
+        btn6 = KeyboardButton('🔙 Back')
+        markup.add(btn1, btn2, btn3, btn4, btn5, btn6)
+        return markup
+
+    @property
+    def menu_meta(self):
+        markup = ReplyKeyboardMarkup(resize_keyboard=True)
+        btn1 = KeyboardButton('🗡️ Carry')
+        btn2 = KeyboardButton('🏹 Mid lane')
+        btn3 = KeyboardButton('🛡️ Off lane')
+        btn4 = KeyboardButton('🤝 Soft support (Pos 4)')
+        btn5 = KeyboardButton('🆘 Hard support (Pos 5)')
+        btn6 = KeyboardButton('🔙 Back')
+        markup.add(btn1, btn2, btn3, btn4, btn5, btn6)
         return markup
 
     @property

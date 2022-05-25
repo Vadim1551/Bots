@@ -3,11 +3,7 @@ from create_bot import bot, hero, md, keyboards
 
 
 async def start(message: types.Message):
-    await bot.send_message(message.chat.id, "Напишите название вашего героя"
-                                            "\nПример: "
-                                            "\nTemplar Assassin"
-                                            "\nTiny"
-                                            "\nAnti-Mage")
+    await bot.send_message(message.chat.id, "Что хотите узнать?", reply_markup=keyboards.start_menu)
 
 
 async def user_text(message: types.Message):
@@ -22,7 +18,15 @@ async def user_text(message: types.Message):
         await bot.send_message(message.chat.id, f'Ваш герой: {message.text}. '
                                                 f'\nМатчи: {list_win_rate[0]}, Винрейт: {list_win_rate[1]}.'
                                                 f'\nВыберите в меню то, что вас интересует?',
-                               reply_markup=keyboards.start_menu)
+                               reply_markup=keyboards.hero_menu)
+
+
+    elif message.text == '👱🏽 Выбрать героя':
+        await bot.send_message(message.chat.id, "Напишите название вашего героя"
+                                                "\nПример: "
+                                                "\nTemplar Assassin"
+                                                "\nTiny"
+                                                "\nAnti-Mage")
 
     elif message.text == '🏹 Предметы':
         if hero.hero_name != '':
@@ -67,7 +71,7 @@ async def user_text(message: types.Message):
         if hero.hero_name != '':
 
             await bot.send_message(message.chat.id, '💬 Выбирете в меню то, что вас интересует?',
-                                   reply_markup=keyboards.start_menu)
+                                   reply_markup=keyboards.hero_menu)
         else:
             await bot.send_message(message.chat.id, "😧 Вы не выбрали героя")
 
@@ -135,19 +139,34 @@ async def user_text(message: types.Message):
         else:
             await bot.send_message(message.chat.id, "😧 Вы не выбрали героя")
 
+    elif message.text == '💪 Метовые герои':
+        await bot.send_message(message.chat.id, 'Выбирете позицию', reply_markup=keyboards.menu_meta)
+
+    elif message.text == '🗡️ Carry' or message.text == '🏹 Mid lane' or message.text == '🛡️ Off lane' or message.text == '🤝 Soft support (Pos 4)' or message.text == '🆘 Hard support (Pos 5)':
+        text = ''
+        list_meta_heroes = md.meta_heroes(message.text)
+        list_meta_heroes.sort(key=lambda heroes: heroes.win_rate, reverse=True)
+        for item in list_meta_heroes:
+            text += f'{item.hero_name}: {item.matches} игр, {item.win_rate} побед\n'
+        await bot.send_message(message.chat.id, text, reply_markup=keyboards.menu_meta)
+
+    elif message.text == '🔙 Back':
+        await bot.send_message(message.chat.id, 'Что хотите узнать', reply_markup=keyboards.start_menu)
+
     elif message.text == '🔙 Вернуться':
         if hero.hero_name != '':
 
             await bot.send_message(message.chat.id, '💬 Выбирете в меню то, что вас интересует?',
-                                   reply_markup=keyboards.start_menu)
+                                   reply_markup=keyboards.hero_menu)
         else:
             await bot.send_message(message.chat.id, "😧 Вы не выбрали героя")
 
-    elif message.text == '🔙 Выбрать другого героя':
-        await bot.send_message(message.chat.id, "💬 Напишите название вашего героя")
-
-    else:
-        await bot.send_message(message.chat.id, "😕 Нет такого героя")
+    elif message.text == '🔄 Выбрать другого героя':
+        await bot.send_message(message.chat.id, "Напишите название вашего героя"
+                                                "\nПример: "
+                                                "\nTemplar Assassin"
+                                                "\nTiny"
+                                                "\nAnti-Mage")
 
 
 def register_handlers_client(dp: Dispatcher):
