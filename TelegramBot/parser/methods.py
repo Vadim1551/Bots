@@ -37,15 +37,12 @@ class Methods:
     def create_files(self, name_hero):
         t1 = threading.Thread(target=self.get_html(name_hero, 1))
         t2 = threading.Thread(target=self.get_html(name_hero, 2))
-        t3 = threading.Thread(target=self.get_html(name_hero, 3))
 
         t1.start()
         t2.start()
-        t3.start()
 
         t1.join()
         t2.join()
-        t3.join()
 
     def get_html(self, name_hero, num_site):  # Получение html кода страницы с одного из двух сайтов
         if num_site == 1:
@@ -62,13 +59,13 @@ class Methods:
             with open("dotabuff.html", "w", encoding='utf-8') as file:
                 file.write(src)
 
-        elif num_site == 3:
-            URL = 'https://www.dota2protracker.com/meta'
-            req = requests.get(URL, headers=self.HEADERS)
-            src = req.text
-            with open("dotameta.html", "w", encoding='utf-8') as file:
-                file.write(src)
 
+    def create_meta_file(self):
+        URL = 'https://www.dota2protracker.com/meta'
+        req = requests.get(URL, headers=self.HEADERS)
+        src = req.text
+        with open("dotameta.html", "w", encoding='utf-8') as file:
+            file.write(src)
 
     def meta_heroes(self, position):
         list_heroes = []

@@ -140,6 +140,7 @@ async def user_text(message: types.Message):
             await bot.send_message(message.chat.id, "😧 Вы не выбрали героя")
 
     elif message.text == '💪 Метовые герои':
+        md.create_meta_file()
         await bot.send_message(message.chat.id, 'Выбирете позицию', reply_markup=keyboards.menu_meta)
 
     elif message.text == '🗡️ Carry' or message.text == '🏹 Mid lane' or message.text == '🛡️ Off lane' or message.text == '🤝 Soft support (Pos 4)' or message.text == '🆘 Hard support (Pos 5)':
