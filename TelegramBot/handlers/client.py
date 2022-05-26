@@ -1,3 +1,5 @@
+import re
+
 from aiogram import types, Dispatcher
 from create_bot import bot, hero, md, keyboards
 
@@ -31,11 +33,11 @@ async def user_text(message: types.Message):
     elif message.text == '🏹 Предметы':
         if hero.hero_name != '':
 
-
             await bot.send_message(message.chat.id, 'Выбирете в меню то, что вас интересует?',
                                    reply_markup=keyboards.menu_items)
         else:
             await bot.send_message(message.chat.id, "😧 Вы не выбрали героя")
+
 
     elif message.text == '🛒 Предметы для покупки':
         if hero.hero_name != '':
@@ -112,7 +114,8 @@ async def user_text(message: types.Message):
         else:
             await bot.send_message(message.chat.id, "😧 Вы не выбрали героя")
 
-    elif message.text == '1' or message.text == '2' or message.text == '3' or message.text == '4' or message.text == '5':
+
+    elif re.search(r'^|[1-5]', message.text):
         if hero.hero_name != '':
             list_last_games = md.last_games(int(message.text))
             for i in range(0, int(message.text)):
@@ -143,7 +146,8 @@ async def user_text(message: types.Message):
         md.create_meta_file()
         await bot.send_message(message.chat.id, 'Выбирете позицию', reply_markup=keyboards.menu_meta)
 
-    elif message.text == '🗡️ Carry' or message.text == '🏹 Mid lane' or message.text == '🛡️ Off lane' or message.text == '🤝 Soft support (Pos 4)' or message.text == '🆘 Hard support (Pos 5)':
+
+    elif message.text in md.POSITION:
         text = ''
         list_meta_heroes = md.meta_heroes(message.text)
         list_meta_heroes.sort(key=lambda heroes: heroes.win_rate, reverse=True)
@@ -155,12 +159,8 @@ async def user_text(message: types.Message):
         await bot.send_message(message.chat.id, 'Что хотите узнать', reply_markup=keyboards.start_menu)
 
     elif message.text == '🔙 Вернуться':
-        if hero.hero_name != '':
-
-            await bot.send_message(message.chat.id, '💬 Выбирете в меню то, что вас интересует?',
-                                   reply_markup=keyboards.hero_menu)
-        else:
-            await bot.send_message(message.chat.id, "😧 Вы не выбрали героя")
+        await bot.send_message(message.chat.id, '💬 Выбирете в меню то, что вас интересует?',
+                               reply_markup=keyboards.hero_menu)
 
     elif message.text == '🔄 Выбрать другого героя':
         await bot.send_message(message.chat.id, "Напишите название вашего героя"

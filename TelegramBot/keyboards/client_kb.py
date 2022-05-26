@@ -24,6 +24,18 @@ class Keyboards:
         return markup
 
     @property
+    def menu_meta(self):
+        markup = ReplyKeyboardMarkup(resize_keyboard=True)
+        btn1 = KeyboardButton('🗡️ Carry')
+        btn2 = KeyboardButton('🏹 Mid lane')
+        btn3 = KeyboardButton('🛡️ Off lane')
+        btn4 = KeyboardButton('🤝 Soft support (Pos 4)')
+        btn5 = KeyboardButton('🆘 Hard support (Pos 5)')
+        btn6 = KeyboardButton('🔙 Back')
+        markup.add(btn1, btn2, btn3, btn4, btn5, btn6)
+        return markup
+
+    @property
     def hero_menu(self):
         markup = ReplyKeyboardMarkup(resize_keyboard=True)
         btn1 = KeyboardButton('🏹 Предметы')
@@ -35,17 +47,6 @@ class Keyboards:
         markup.add(btn1, btn2, btn3, btn4, btn5, btn6)
         return markup
 
-    @property
-    def menu_meta(self):
-        markup = ReplyKeyboardMarkup(resize_keyboard=True)
-        btn1 = KeyboardButton('🗡️ Carry')
-        btn2 = KeyboardButton('🏹 Mid lane')
-        btn3 = KeyboardButton('🛡️ Off lane')
-        btn4 = KeyboardButton('🤝 Soft support (Pos 4)')
-        btn5 = KeyboardButton('🆘 Hard support (Pos 5)')
-        btn6 = KeyboardButton('🔙 Back')
-        markup.add(btn1, btn2, btn3, btn4, btn5, btn6)
-        return markup
 
     @property
     def menu_items(self):

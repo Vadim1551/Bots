@@ -21,6 +21,15 @@ class Methods:
         '🆘 Hard support (Pos 5)' : 6
     }
 
+    POSITION_FOR_HERO = {
+        'Carry' : 1,
+        'Mid' : 2,
+        'Offlane' : 3,
+        'Support (4)' : 4,
+        'Support (5)' : 5
+    }
+
+
     def hero_check(self, text):  # Проверка на существование имени героя
         list_names = open('list_hero_names.txt', encoding='utf-8')
         count = 0
