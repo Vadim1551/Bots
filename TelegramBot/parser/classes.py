@@ -62,18 +62,9 @@ class Person:
 
 class Hero(Person):
     def __init__(self):
-        #self.__hero_name = ''
         super().__init__()
         self.__win_rate = ''
         self.__matches = ''
-
-    #@property
-    #def hero_name(self):
-        #return self.__hero_name
-
-    #@hero_name.setter
-    #def hero_name(self, name):
-        #self.__hero_name = name
 
     @property
     def win_rate(self):
