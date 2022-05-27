@@ -1,5 +1,3 @@
-import re
-
 from aiogram import types, Dispatcher
 from create_bot import bot, hero, md, keyboards
 
@@ -115,7 +113,7 @@ async def user_text(message: types.Message):
             await bot.send_message(message.chat.id, "😧 Вы не выбрали героя")
 
 
-    elif re.search(r'^|[1-5]', message.text):
+    elif message.text in ('1', '2', '3', '4', '5'):
         if hero.hero_name != '':
             list_last_games = md.last_games(int(message.text))
             for i in range(0, int(message.text)):
@@ -141,6 +139,7 @@ async def user_text(message: types.Message):
                                                         f'{text_mid}')
         else:
             await bot.send_message(message.chat.id, "😧 Вы не выбрали героя")
+
 
     elif message.text == '💪 Метовые герои':
         md.create_meta_file()

@@ -14,23 +14,28 @@ class Methods:
     }
 
     POSITION = {
-        '🗡️ Carry' : 2,
-        '🏹 Mid lane' : 3,
-        '🛡️ Off lane' : 4,
-        '🤝 Soft support (Pos 4)' : 5,
-        '🆘 Hard support (Pos 5)' : 6
+        '🗡️ Carry': 2,
+        '🏹 Mid lane': 3,
+        '🛡️ Off lane': 4,
+        '🤝 Soft support (Pos 4)': 5,
+        '🆘 Hard support (Pos 5)': 6
     }
 
     POSITION_FOR_HERO = {
-        'Carry' : 1,
-        'Mid' : 2,
-        'Offlane' : 3,
-        'Support (4)' : 4,
-        'Support (5)' : 5
+        'Carry': 1,
+        'Mid': 2,
+        'Offlane': 3,
+        'Support (4)': 4,
+        'Support (5)': 5
     }
 
+    CHANGE_LIST = {
+        'item_': '',
+        '_': ' '
+    }
 
-    def hero_check(self, text):  # Проверка на существование имени героя
+    # Проверка на существование имени героя
+    def hero_check(self, text):
         list_names = open('list_hero_names.txt', encoding='utf-8')
         count = 0
         hero_name = text.replace(' ', '-')
@@ -43,6 +48,7 @@ class Methods:
         if count == 0:
             return False
 
+    # Параллельное создание двух файлов с html содом страниц
     def create_files(self, name_hero):
         t1 = threading.Thread(target=self.get_html(name_hero, 1))
         t2 = threading.Thread(target=self.get_html(name_hero, 2))
@@ -53,7 +59,8 @@ class Methods:
         t1.join()
         t2.join()
 
-    def get_html(self, name_hero, num_site):  # Получение html кода страницы с одного из двух сайтов
+    # Получение html кода страницы с одного из двух сайтов
+    def get_html(self, name_hero, num_site):
         if num_site == 1:
             URL = 'https://www.dota2protracker.com/hero/'
             req = requests.get(URL + name_hero.replace(' ', '%20'), headers=self.HEADERS)
@@ -68,7 +75,7 @@ class Methods:
             with open("dotabuff.html", "w", encoding='utf-8') as file:
                 file.write(src)
 
-
+    # Создание файла с html кодом для отдельной вкладки (Метовые герои)
     def create_meta_file(self):
         URL = 'https://www.dota2protracker.com/meta'
         req = requests.get(URL, headers=self.HEADERS)
@@ -76,11 +83,13 @@ class Methods:
         with open("dotameta.html", "w", encoding='utf-8') as file:
             file.write(src)
 
+    # Получение списка метовых героев
     def meta_heroes(self, position):
         list_heroes = []
         pos = self.POSITION[f'{position}']
         soup = Methods.__get_soup("meta")
-        list_meta_heroes = soup.find('div', class_=f'content-box tabs-{pos} inactive').find_all('div', class_='top-hero')
+        list_meta_heroes = soup.find('div', class_=f'content-box tabs-{pos} inactive').find_all('div',
+                                                                                                class_='top-hero')
         for item in list_meta_heroes:
             hero = Hero()
             hero.hero_name = item.find('a').get('title')
@@ -89,8 +98,8 @@ class Methods:
             list_heroes.append(hero)
         return list_heroes
 
-
-    def list_heros(self, table_num):  # Получение списка героев с их показателями
+    # Получение списка героев с их показателями для вкладок "контрпики" и "кого контрит"
+    def list_heros(self, table_num):
         soup = Methods.__get_soup("buff")
         list_section = soup.find(class_="col-8").find_all("section")
         list_heroes = list_section[table_num].find_all("tr")
@@ -111,31 +120,21 @@ class Methods:
             list_objects.append(hero)
         return list_objects
 
-    def set_item_name_and_win(self, item_name, skip, list_win, i):  # Получение названия и винрейта предмета
-        name = item_name.replace('item_', '')
-        name = name.replace('_', ' ')
-        name = name[:1].upper() + name[1:]
-        thing = Item()
-        thing.item_name(name)
-        if skip == 2 or skip == 3:
-            win = list_win[i].get_text().strip()
-            thing.item_win(win)
-        return thing
-
-    def list_items(self, count):  # Получаем список предметов из нужной таблицы
+    # Получаем список предметов из нужной таблицы
+    def list_items(self, count):
         soup = Methods.__get_soup("pro")
         list_item_tables = soup.find("div", class_="content-box-body").find_all("div", class_="inner-box")
         list_item = []
         skip = 0  # Пропуск ненужных таблиц элементов
         for item in list_item_tables:
             if item.find("div", class_="inner-box-header").text.strip() != "Top Ability Build":
-                if skip == 1 and count == skip:       # Таблица предметов для покупки
+                if skip == 1 and count == skip:  # Таблица предметов для покупки
                     list_items = item.find_all("div", class_="item-row-top")
                     for items in list_items:
                         item_name = items.get('title')  # Получение названия предмета
                         list_item.append(Methods.__set_item_name_and_win(item_name, skip, list_item, 0))
                     return list_item
-                elif skip == 2 and count == skip:     # Таблица предметов стартового закупа
+                elif skip == 2 and count == skip:  # Таблица предметов стартового закупа
                     list_items = item.find_all("div", class_="item-row-top")
                     list_win = item.find_all("div", class_="item-row-bottom")
                     for i in range(0, 11):
@@ -149,7 +148,7 @@ class Methods:
                         except IndexError:
                             pass
                     return list_item
-                elif skip == 3 and count == skip:        # Таблица доп. предметов
+                elif skip == 3 and count == skip:  # Таблица доп. предметов
                     list_items = item.find_all("div", class_="item-row-top")
                     list_win = item.find_all("div", class_="item-row-bottom")
                     for i in range(0, 11):
@@ -162,6 +161,7 @@ class Methods:
                     return list_item
             skip += 1
 
+    # Получение винрейта героя
     def win_rate(self):
         soup = Methods.__get_soup("pro")
         list_data = []
@@ -172,7 +172,8 @@ class Methods:
         list_data.append(w)
         return list_data
 
-    def last_games(self, count_games):  # Получаем список последних игр про-игроков на этом герое
+    # Получаем список последних игр про-игроков на этом герое
+    def last_games(self, count_games):
         soup = Methods.__get_soup("pro")
         list_last_games = []
         list_games = soup.find('table', class_='alx_table sort-fd').find('tbody').find_all('tr')
@@ -184,7 +185,8 @@ class Methods:
 
                 game = Game()
 
-                list_start_items = item.find("div", class_='item-inventory-start').find_all('div', class_='inventory-item')
+                list_start_items = item.find("div", class_='item-inventory-start').find_all('div',
+                                                                                            class_='inventory-item')
 
                 if len(list_start_items) == 0:  # Проверяем что игра не пустая
                     count_games += 1
@@ -195,7 +197,7 @@ class Methods:
                 Methods.__set_game_end_items(list_item_build, game)
 
                 win = ''.join(item.td['class'])
-                game.win = win
+                game.win = win.capitalize()
 
                 player_name = item.find("div", class_='pros-stats').find('a').text
                 game.player_name = player_name
@@ -207,19 +209,20 @@ class Methods:
             count += 1
         return list_last_games
 
-
+    # Получение названия и винрейта предмета
     @staticmethod
-    def __set_item_name_and_win(item_name, skip, list_win, i):  # Получение названия и винрейта предмета
+    def __set_item_name_and_win(item_name, skip, list_win, i):
+
         name = item_name.replace('item_', '')
         name = name.replace('_', ' ')
-        name = name[:1].upper() + name[1:]
         thing = Item()
-        thing.item_name = name
+        thing.item_name = name.capitalize()
         if skip == 2 or skip == 3:
             win = list_win[i].get_text().strip()
             thing.item_win = win
         return thing
 
+    # Добавляем объекту Game() список начальных предметов
     @staticmethod
     def __set_game_end_items(list_item_build, game):
         list_middle = []
@@ -230,6 +233,7 @@ class Methods:
             list_middle.append(thing)
         game.items = list_middle
 
+    # Добавляем объекту Game() список итоговых предметов
     @staticmethod
     def __set_game_start_items(list_start_items, game):
         list_start = []
@@ -247,6 +251,7 @@ class Methods:
             list_start.append(thing)
         game.start_items = list_start
 
+    # Создаем объект библиотеки BeautifulSoup для работы с полученными html данными
     @staticmethod
     def __get_soup(site_name):
         if site_name == "pro":
